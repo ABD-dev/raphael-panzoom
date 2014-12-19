@@ -1,0 +1,19 @@
+{
+  "name": "raphael-panzoom",
+  "version": "0.0.0",
+  "authors": [
+    "Bogdan Dinga <bogdan.dinga@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "raphael": "~2.1.2",
+    "bootstrap": "~3.3.1"
+  }
+}
