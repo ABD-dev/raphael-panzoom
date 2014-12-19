@@ -11,7 +11,7 @@
 		// aspect ratio: 0.75
 		var ww = 1048;
 		var hh = 0.75*ww;
-		paper.setViewBox(0, 0, ww, hh);
+		//paper.setViewBox(0, 0, ww, hh);
 
 	paper.add([
 			{type: "circle",cx: 200,cy: 200,r: 20,fill: 'tomato',stroke: 'black'},

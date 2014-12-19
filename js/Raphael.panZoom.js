@@ -4,20 +4,21 @@ Raphael.fn.panZoom = function(){
 		this.setViewBox(0,0,this.width,this.height);
 	}
 
-	var paper 			= this,
-		container 		= paper.canvas.parentNode,
-		aspectRatio 	= getAspectRatio().toFixed(2),
-		isMouseDown		= false,
-		isMouseMove		= false,
-		isPanDisable	= false,
-		isZoomDisable	= false,
-		initialZoom 	= 1,
-		currentZoom 	= initialZoom,
-		zoomStep 		= 0.1,
-		minZoom 		= 1,
-		maxZoom 		= 2,
-		initX, initY, endX, endY, deltaX, deltaY;
-	console.log(aspectRatio);
+	var paper 				= this,
+		initialPaperWidth 	= paper.width,
+		initialPaperHeight 	= paper.height,
+		container 			= paper.canvas.parentNode,
+		aspectRatio 		= getAspectRatio().toFixed(2),
+		isMouseDown			= false,
+		isMouseMove			= false,
+		isPanDisable		= false,
+		isZoomDisable		= false,
+		initialZoom 		= 1,
+		currentZoom 		= initialZoom,
+		zoomStep 			= 0.1,
+		minZoom 			= 1,
+		maxZoom 			= 2,
+		initX, initY, endX, endY, deltaX, deltaY, paperWidth, paperHeight;
 
 	function getAspectRatio(){
 		return paper.height / paper.width;
@@ -40,22 +41,40 @@ Raphael.fn.panZoom = function(){
 	}
 
 	function zoomIn(){
-		// set viewBox bigger
-		//console.log("scale 110%+");
+		if( currentZoom.toFixed(1) <= minZoom ){
+			console.log("stop zoom");
+			return;
+		}
+		currentZoom -= zoomStep;
+
+		var newWidth = Math.ceil( initialPaperWidth*currentZoom.toFixed(1) );
+		var newHeight = Math.ceil( newWidth*aspectRatio );
+		
+		resizePaper();
+		paper.setViewBox(0, 0, newWidth, newHeight);
+		
 	}
 
 	function zoomOut(){
-		// set viewBox smaller
-		var currentViewBox = getCurrentViewBox();
-		var maxWidth = ( paper.width - container.offsetWidth ) + currentViewBox.w;
-		var newWidth = Math.ceil( (currentViewBox.w*110)/100 );
-		if( newWidth > maxWidth ){
-			newWidth = maxWidth;
+		if( currentZoom.toFixed(1) >= maxZoom ){
+			console.log("stop zoom");
+			return;
 		}
-		var newHeight = Math.ceil( aspectRatio*newWidth );
-		console.log(newWidth+"x"+newHeight);
-		paper.setViewBox(0,0,newWidth,newHeight);
+		currentZoom += zoomStep;
 
+		var newWidth = Math.ceil( initialPaperWidth*currentZoom.toFixed(1) );
+		var newHeight = Math.ceil( newWidth*aspectRatio );
+
+		resizePaper();
+		paper.setViewBox(0, 0, newWidth, newHeight);
+
+		
+	}
+
+	function resizePaper(){
+		paperWidth = Math.ceil( initialPaperWidth-initialPaperWidth*( currentZoom.toFixed(1)-initialZoom ) );
+		paperHeight = Math.ceil( paperWidth*aspectRatio );
+		paper.setSize(paperWidth,paperHeight);
 	}
 
 	/* Pan */
@@ -88,8 +107,8 @@ Raphael.fn.panZoom = function(){
 
 		if( deltaX < 0 ){ 
 			deltaX = 0 
-		}else if( currentViewBox.w > paper.width ){
-			deltaX = 0;
+		/*}else if( currentViewBox.w > paper.width ){
+			deltaX = 0;*/
 		}else if( deltaX > currentViewBox.w - container.offsetWidth ){
 			deltaX = currentViewBox.w - container.offsetWidth ;
 		}
